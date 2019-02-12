@@ -131,7 +131,7 @@ class Validator
     // проверка пропустит только алфавитные символы
     private function checkAlphabet($val, $rule)
     {
-        $pattern = '/[^0-9]\w+/';
+        $pattern = '/^[a-zA-ZА-Яа-я\\s]+$/';
         if (preg_match($pattern, $val) === 0) {
             return 'разрешены только буквы';
         }

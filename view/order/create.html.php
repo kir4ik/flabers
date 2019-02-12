@@ -1,4 +1,4 @@
-<?php if($errors) foreach($errors as $field => $err): ?>
+<?php if(!empty($errors)) foreach($errors as $field => $err): ?>
   <ul>Поле: <?= $field ?>
   <?php for($i = 0; $i < count($err); $i++): ?>
     <li>Ошибка: <?= $err[$i] ?></li>

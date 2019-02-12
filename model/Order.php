@@ -11,16 +11,16 @@ class Order
         'client_name' => [
             'required' => true,
             'alphabet' => true,
-            'length' => ['min' => 10, 'type' => Validator::TYPE_STRING]
+            'length' => ['min' => 2, 'type' => Validator::TYPE_STRING]
         ],
         'client_last_name' => [
             'required' => true,
             'alphabet' => true,
-            'length' => ['min' => 10, 'type' => Validator::TYPE_STRING]
+            'length' => ['min' => 2, 'type' => Validator::TYPE_STRING]
         ],
         'phone' => [
             'required' => true,
-            'phone' => '+38(___) ___-__-__'
+            // 'phone' => '+38(___) ___-__-__'
         ],
         'email' => [
             'required' => true,
@@ -47,6 +47,17 @@ class Order
 
     public function create(Array $data)
     {
+        // проверка данных на корректность
+        $isSuccess = $this->check($data);
+        // данные не корректны
+        if (!$isSuccess) return $isSuccess;
+        // всё ок
+        return $this->driverDB->create($this->table, $data);
+    }
+
+    // пройти валидацию 
+    private function check(Array $data)
+    {
         $this->errors = []; // reset errors
         $this->clean = []; // reset clean
 
@@ -57,7 +68,7 @@ class Order
             if (!$dataField['isSuccess']) {
                 $this->errors[$field] = $dataField['errors'];
             }
-
+            // запись чистых данных
             $this->clean[$field] = $dataField['clean'];
         }
 

@@ -66,7 +66,7 @@ class Validator
         if ($type === self::TYPE_NUMBER) $val = (float) $val;
 
         if (is_string($val)) {
-            return self::isEmpty($val) ? 0 < $min : strlen($val) < $min;
+            return self::isEmpty($val) ? 0 < $min : mb_strlen($val) < $min;
         }
 
         return $val < $min;
@@ -79,7 +79,7 @@ class Validator
         if ($type === self::TYPE_NUMBER) $val = (float) $val;
 
         if (is_string($val)) {
-            return self::isEmpty($val) ? 0 > $max : strlen($val) > $max;
+            return self::isEmpty($val) ? 0 > $max : mb_strlen($val) > $max;
         }
 
         return $val > $max;
@@ -131,7 +131,7 @@ class Validator
     // проверка пропустит только алфавитные символы
     private function checkAlphabet($val, $rule)
     {
-        $pattern = '/^[a-zA-ZА-Яа-я\\s]+$/';
+        $pattern = '/^[a-zA-ZА-Яа-я\\s]+$/iu';
         if (preg_match($pattern, $val) === 0) {
             return 'разрешены только буквы';
         }

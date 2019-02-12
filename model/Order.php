@@ -52,7 +52,7 @@ class Order
         // данные не корректны
         if (!$isSuccess) return $isSuccess;
         // всё ок
-        return $this->driverDB->create($this->table, $data);
+        return $this->driverDB->create($this->table, $this->clean);
     }
 
     // пройти валидацию 

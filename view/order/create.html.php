@@ -18,7 +18,7 @@
 
   <!-- Unnamed (Text Field) -->
   <div id="u1" class="ax_default text_field">
-    <input id="u1_input" type="text" name="client_name" value="<?= isset($cleanData['client_name']) ? $cleanData['client_name'] : '' ?>"/>
+    <input id="u1_input" type="text" name="client_name" value="<?= isset($_POST['client_name']) ? $_POST['client_name'] : '' ?>"/>
   </div>
 
   <!-- Unnamed (Rectangle) -->
@@ -31,7 +31,7 @@
 
   <!-- Unnamed (Text Field) -->
   <div id="u3" class="ax_default text_field">
-    <input id="u3_input" type="text" name="client_last_name" value="<?= isset($cleanData['client_last_name']) ? $cleanData['client_last_name'] : '' ?>"/>
+    <input id="u3_input" type="text" name="client_last_name" value="<?= isset($_POST['client_last_name']) ? $_POST['client_last_name'] : '' ?>"/>
   </div>
 
   <!-- Unnamed (Rectangle) -->
@@ -44,7 +44,7 @@
 
   <!-- Unnamed (Text Field) -->
   <div id="u5" class="ax_default text_field">
-    <input id="u5_input" type="text" name="phone" value="<?= isset($cleanData['phone']) ? $cleanData['phone'] : '+38(___) ___-__-__' ?>"/>
+    <input id="u5_input" type="text" name="phone" value="<?= isset($_POST['phone']) ? $_POST['phone'] : '+38(___) ___-__-__' ?>"/>
   </div>
 
   <!-- Unnamed (Rectangle) -->
@@ -57,7 +57,7 @@
 
   <!-- Unnamed (Text Field) -->
   <div id="u7" class="ax_default text_field">
-    <input id="u7_input" type="text" name="city" value="<?= isset($cleanData['city']) ? $cleanData['city'] : '' ?>"/>
+    <input id="u7_input" type="text" name="city" value="<?= isset($_POST['city']) ? $_POST['city'] : '' ?>"/>
   </div>
 
   <!-- Unnamed (Rectangle) -->
@@ -70,7 +70,7 @@
 
   <!-- Unnamed (Text Field) -->
   <div id="u9" class="ax_default text_field">
-    <input id="u9_input" type="number" name="amount" min="0.00" step="0.01" value="<?= isset($cleanData['amount']) ? $cleanData['amount'] : '00.00' ?>"/>
+    <input id="u9_input" type="number" name="amount" min="0.00" step="0.01" value="<?= isset($_POST['amount']) ? $_POST['amount'] : '00.00' ?>"/>
   </div>
 
   <!-- Unnamed (Rectangle) -->
@@ -99,7 +99,7 @@
 
   <!-- Unnamed (Text Field) -->
   <div id="u13" class="ax_default text_field">
-    <input id="u13_input" type="email" name="email" value="<?= isset($cleanData['email']) ? $cleanData['email'] : '' ?>"/>
+    <input id="u13_input" type="email" name="email" value="<?= isset($_POST['email']) ? $_POST['email'] : '' ?>"/>
   </div>
 
   <!-- Unnamed (Rectangle) -->

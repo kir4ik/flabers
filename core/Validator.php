@@ -7,9 +7,10 @@ class Validator
     const TYPE_STRING = 'string';
     const TYPE_NUMBER = 'number';
 
-    function __construct(Array $rules)
+    function __construct(Array $rules, Array $filter = [])
     {
         $this->rules = $rules; // правила по которым проверять
+        $this->filter = $filter; // хранит настройки для фильтрации полей
         $this->glossary = $this->getGlossary(); // [правило => проверка]
     }
 
@@ -21,16 +22,16 @@ class Validator
         ];
 
         foreach($data as $nameField => $valField) {
+            // настройка фильтра для поля
+            $filter = isset($this->filter[$nameField]) ? $this->filter[$nameField] : [];
+            // шаблон результата проверки поля
             $resCheckField = [
                 'isSuccess' => true,
                 'errors' => [],
-                'clean' => []
+                'clean' => Cleaner::run($valField, $filter)
             ];
 
             foreach($this->rules[$nameField] as $nameRule => $valRule) {
-                // очистка данных
-                $resCheckField['clean'] = $this->cleanField($valField);
-                
                 $error = call_user_func($this->glossary[$nameRule], $resCheckField['clean'], $valRule);
                 
                 if ($error !== '') {
@@ -45,12 +46,6 @@ class Validator
         }
 
         return $res;
-    }
-
-    // очистка поля от ненужных сиволов
-    public static function cleanField($val)
-    {
-        return trim(htmlspecialchars($val));
     }
 
     // true => пустое поле
@@ -89,7 +84,7 @@ class Validator
     private function checkRequired($val, $rule)
     {
         if ($rule && self::isEmpty($val)) {
-            return 'error: this field required!';
+            return 'обязательное поле';
         }
 
         return '';
@@ -119,7 +114,7 @@ class Validator
     }
 
     // проверка на число
-    private function checkNumber($val, $rule)
+    private function checkNumeric($val, $rule)
     {
         if ($rule && !is_numeric($val)) {
             return 'не число';
@@ -149,12 +144,6 @@ class Validator
         return '';
     }
 
-    // проверка номера телефона по формату
-    public function checkPhone($var, $format)
-    {
-
-    }
-
     private function getGlossary()
     {
         return [
@@ -164,18 +153,15 @@ class Validator
             'length' => function($var, $rule) {
                 return $this->checkLength($var, $rule);
             },
-            'number' => function($var, $rule) { // числовое
-                return $this->checkNumber($var, $rule);
+            'numeric' => function($var, $rule) { // числовое
+                return $this->checkNumeric($var, $rule);
             },
             'alphabet' => function($var, $rule) { // буквенное
                 return $this->checkAlphabet($var, $rule);
             },
-            'email' => function($var, $rule) { 
+            'email' => function($var, $rule) {
                 return $this->checkEmail($var, $rule);
-            },
-            'phone' => function($var, $format) { 
-                return $this->checkPhone($var, $format);
-            },
+            }
         ];
     }
 }

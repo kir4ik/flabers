@@ -20,7 +20,7 @@ class Order
         ],
         'phone' => [
             'required' => true,
-            // 'phone' => '+38(___) ___-__-__'
+            'numeric' => true
         ],
         'email' => [
             'required' => true,
@@ -32,15 +32,21 @@ class Order
         ],
         'amount' => [
             'required' => true,
-            'number' => true
+            'numeric' => true
         ]
+    ];
+
+    private $filter = [
+        'phone' => [
+            'regex' => '/[\-+_()\s]+/'
+        ],
     ];
 
     function __construct()
     {
         $this->driverDB = new DriverDB();
         $this->table = 'orders';
-        $this->validator = new Validator($this->rules);
+        $this->validator = new Validator($this->rules, $this->filter);
         $this->errors = [];
         $this->clean = []; // читые данные
     }

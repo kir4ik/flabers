@@ -45,6 +45,12 @@ $test = Convertor::exec(10000, 'UAH', 'USD');
 
 echo number_format($test, 2, '.', ' ');
 //end test convertor
+
+use core\DriverDB;
+$driver = new DriverDB();
+$driver->find('orders');
+var_dump($driver->st_getSum('amount'));
+var_dump($driver->st_get(['id', 'amount']));
 echo '</pre>';
 
 $controller->$action();

@@ -2,7 +2,12 @@
 
 namespace core;
 
-// API для работы с БД
+/**
+ * API для работы с БД
+ * методы для работы которых нужен statement идут с префиксом "st_"
+ * statement может быть утановлен методом find
+ * после этого могут быть вызваны методы для детализации данных
+ *  */ 
 class DriverDB
 {
     // для форматирования строк в маски
@@ -13,12 +18,13 @@ class DriverDB
     // сортировка
     const SORT_DESC = 'DESC';
     const SORT_ASC = 'ASC';
-    
+
     function __construct()
     {
         $this->db = DBConnect::getConnect();
         $this->statement = null; // последний предопределённый запрос
         $this->lastMask = []; // последние использованные значения для замены масок
+        $this->currentCols = '*'; // default значение для результирующих столбцов (вернутся в ответе все)
     }
 
     // создаёт новую запись
@@ -43,7 +49,7 @@ class DriverDB
      *  */
     public function find(String $table, Array $cond = [])
     {
-        $sql = sprintf('SELECT * FROM `%s`', $table);
+        $sql = sprintf('SELECT %s FROM `%s`', $this->currentCols, $table);
 
         if (!empty($cond)) {
             $maskOpts = [self::BEFORE => '=:', self::INSERT_CLONE_BEFORE => true]; // => key=:key
@@ -51,7 +57,8 @@ class DriverDB
             
             $sql .= sprintf(' WHERE %s', $mask);
         }
-        $this->lastMask = self::getArrClaim($cond, [self::BEFORE => ':']);
+
+        $this->lastMask = array_merge($this->lastMask, self::getArrClaim($cond, [self::BEFORE => ':']));
         $this->statement = $this->db->prepare($sql);
 
         return $this;
@@ -61,7 +68,7 @@ class DriverDB
      * устанавливает сортировку в подготовленный запрос
      * работает если определён statement
      *  */ 
-    public function sort(Array $cols = [], Bool $isDesc = false)
+    public function st_sort(Array $cols = [], Bool $isDesc = false)
     {
         if (empty($cols)) return $this; // ничего не делать
 
@@ -82,18 +89,41 @@ class DriverDB
      * возвращает результат запроса (выборки)
      * работает если определён statement
      *  */ 
-    public function get(Array $cols = [])
+    public function st_get(Array $cols = [])
     {
+        // замена значения маки для столбцов
         if (!empty($cols)) {
             $sql = $this->statement->queryString;
-            $strCols = implode(',', $cols);
-            $sql = substr_replace($sql,  $strCols, strpos($sql, '*'), 1);
+            $strCols = implode(',', $cols); // новое значение столбцов
             
-            $this->statement = $this->db->prepare($sql);
+            $this->st_setCols($strCols); // обновление столбцов в запросе
         }
+
         $this->statement->execute($this->lastMask);
         
         return $this->statement->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // вернёт сумму значений переданного столбца из соответстующей выборки
+    public function st_getSum(String $col)
+    {
+        $this->st_setCols("SUM($col)");
+        $this->statement->execute($this->lastMask);
+        
+        return $this->statement->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    // установит новое значение столбцов и обновит statement
+    private function st_setCols(String $cols)
+    {
+        $sql = $this->statement->queryString;
+        $posStart = strpos($sql, $this->currentCols);
+        $len = mb_strlen($this->currentCols);
+
+        $sql = substr_replace($sql,  $cols, $posStart, $len); // замена старого значения
+        $this->currentCols = $cols; // запомнить текущее значение
+
+        $this->statement = $this->db->prepare($sql); // обновить statement
     }
 
     // форматирует строку в соответствии с опциями

@@ -9,7 +9,7 @@
     <li>Сумма: <?= $record['amount'] ?></li>
   </ul>
 <?php endforeach; ?>
-<div id="base" class="">
+<form method="GET" action="./" id="base" class="">
 
   <!-- Unnamed (Rectangle) -->
   <div id="u26" class="ax_default heading_1">
@@ -21,9 +21,9 @@
 
   <!-- Unnamed (Rectangle) -->
   <div id="u27" class="ax_default primary_button">
-    <div id="u27_div" class=""></div>
+    <input type="submit" id="u27_div" value="Найти" name="filter" style="color: white; cursor: pointer">
     <div id="u27_text" class="text ">
-      <p><span>Найти</span></p>
+      <!-- <p><span>Найти</span></p> -->
     </div>
   </div>
 
@@ -680,7 +680,7 @@
 
   <!-- Unnamed (Text Field) -->
   <div id="u111" class="ax_default text_field">
-    <input id="u111_input" type="text" value=""/>
+    <input id="u111_input" type="number" name="id" value=""/>
   </div>
 
   <!-- Unnamed (Rectangle) -->
@@ -693,7 +693,7 @@
 
   <!-- Unnamed (Text Field) -->
   <div id="u113" class="ax_default text_field">
-    <input id="u113_input" type="text" value=""/>
+    <input id="u113_input" type="text" name="city" value=""/>
   </div>
 
   <!-- Unnamed (Rectangle) -->
@@ -770,4 +770,4 @@
       <p><span>Сумма заказа</span></p>
     </div>
   </div>
-</div>
+</form>

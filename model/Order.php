@@ -74,8 +74,8 @@ class Order
         }
 
         $res = $this->driverDB->find($this->table, $condClean)
-                    ->sort($sortBy, $isDesc)
-                    ->get($cols);
+                    ->st_sort($sortBy, $isDesc)
+                    ->st_get($cols);
         
         return  $res;
     }

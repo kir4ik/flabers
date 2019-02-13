@@ -62,10 +62,22 @@ class Order
         return $this->driverDB->create($this->table, $this->clean);
     }
 
-    // вернёт все записи
-    public function getAll()
+    /**
+     * отдает записи
+     * если критерий не задан = все записи
+     *  */ 
+    public function get(Array $cols = [], Array $condition = [], Array $sortBy = [], Bool $isDesc = false)
     {
-        return $this->driverDB->select($this->table);
+        $condClean = [];
+        foreach ($condition as $key => $val) {
+            if (!$this->validator::isEmpty($val)) $condClean[$key] = $val;
+        }
+
+        $res = $this->driverDB->find($this->table, $condClean)
+                    ->sort($sortBy, $isDesc)
+                    ->get($cols);
+        
+        return  $res;
     }
 
     // пройти валидацию 

@@ -38,8 +38,24 @@ class Order extends BaseOrder
     {
         $this->title = 'Отчёты о заказах';
         $this->isList = true;
+
+        if (!isset($_GET['filter'])) {
+            $this->content = $this->build('order/list', [
+                'orders' => $this->model->get()
+            ]);
+            return;
+        }
+
+        $filter = [
+            'id' => $_GET['id'] ?? '',
+            'city' => $_GET['city'] ?? '',
+            'amount' => $_GET['amount'] ?? '',
+        ];
+
+        $orders = $this->model->get([], $filter, ['date_created'], true);
+
         $this->content = $this->build('order/list', [
-            'orders' => $this->model->getAll()
+            'orders' => $orders
         ]);
     }
 }

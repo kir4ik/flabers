@@ -37,6 +37,7 @@ switch($uri[1]) {
 }
 $action = sprintf('action%s', $action);
 
+echo '<pre>';
 // test convertor
 use externalAPI\Convertor;
 Convertor::init();
@@ -44,6 +45,7 @@ $test = Convertor::exec(10000, 'UAH', 'USD');
 
 echo number_format($test, 2, '.', ' ');
 //end test convertor
+echo '</pre>';
 
 $controller->$action();
 $controller->render();

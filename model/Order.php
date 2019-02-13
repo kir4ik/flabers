@@ -51,6 +51,7 @@ class Order
         $this->clean = []; // читые данные
     }
 
+    // если прошли валидацию создаст новую запись
     public function create(Array $data)
     {
         // проверка данных на корректность
@@ -59,6 +60,12 @@ class Order
         if (!$isSuccess) return $isSuccess;
         // всё ок
         return $this->driverDB->create($this->table, $this->clean);
+    }
+
+    // вернёт все записи
+    public function getAll()
+    {
+        return $this->driverDB->select($this->table);
     }
 
     // пройти валидацию 

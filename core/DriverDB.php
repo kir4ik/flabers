@@ -28,6 +28,22 @@ class DriverDB
         return $st->execute(self::getArrClaim($data, $maskOpts));
     }
 
+    /**
+     * отдает записи
+     * если критерий не задан = все записи
+     *  */ 
+    public function select(String $table, Array $opts = [])
+    {
+        // подготовка запроса
+        $sql = sprintf('SELECT * FROM `%s`', $table);
+        $st = $this->db->prepare($sql);
+
+        if (empty($opts)) {
+            $st->execute();
+            return $st->fetchAll();
+        }
+    }
+
     // форматирует строку в соответствии с опциями
     public static function formatStr(String $str, Array $opts)
     {

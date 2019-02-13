@@ -1,3 +1,14 @@
+<?php if(!empty($orders)) foreach($orders as $record): ?>
+  <ul>
+    <li>ID: <?= $record['id'] ?></li>
+    <li>Имя: <?= $record['client_name'] ?></li>
+    <li>Фамилия: <?= $record['client_last_name'] ?></li>
+    <li>Телефон: <?= $record['phone'] ?></li>
+    <li>E-mail: <?= $record['email'] ?></li>
+    <li>Город: <?= $record['city'] ?></li>
+    <li>Сумма: <?= $record['amount'] ?></li>
+  </ul>
+<?php endforeach; ?>
 <div id="base" class="">
 
   <!-- Unnamed (Rectangle) -->

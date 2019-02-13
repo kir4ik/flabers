@@ -10,6 +10,6 @@ return [
         'phone' => 'VARCHAR(16) NOT NULL',
         'email' => 'VARCHAR(50) NOT NULL',
         'city' => 'VARCHAR(50) NOT NULL',
-        'amount' => 'FLOAT(20) NOT NULL',
+        'amount' => 'DOUBLE NOT NULL',
     ],
 ];

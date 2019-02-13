@@ -9,9 +9,9 @@ session_start();
 /**
  * Установка таблиц для корректной работы
  * */
-// use install\Installer;
-// $installer = new Installer();
-// $installer->run();
+use install\Installer;
+$installer = new Installer();
+$installer->run();
 
 $uri = explode('/', $_GET['uri']);
 
@@ -36,6 +36,14 @@ switch($uri[1]) {
 		notFound();
 }
 $action = sprintf('action%s', $action);
+
+// test convertor
+use externalAPI\Convertor;
+Convertor::init();
+$test = Convertor::exec(10000, 'UAH', 'USD');
+
+echo number_format($test, 2, '.', ' ');
+//end test convertor
 
 $controller->$action();
 $controller->render();

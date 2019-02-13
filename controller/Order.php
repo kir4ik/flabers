@@ -38,6 +38,8 @@ class Order extends BaseOrder
     {
         $this->title = 'Отчёты о заказах';
         $this->isList = true;
-        $this->content = $this->build('order/list');
+        $this->content = $this->build('order/list', [
+            'orders' => $this->model->getAll()
+        ]);
     }
 }

@@ -4,7 +4,7 @@ namespace controller;
 
 use model;
 
-class BaseOrder
+class BaseController
 {
     function __construct()
     {
@@ -18,8 +18,7 @@ class BaseOrder
     {
         echo $this->build('BaseTemplate', [
             'title' => $this->title,
-            'content' => $this->content,
-            'isList' => $this->isList
+            'content' => $this->content
         ]);
     }
 

@@ -23,7 +23,7 @@ class DriverDB
     {
         $this->db = DBConnect::getConnect();
         $this->statement = null; // последний предопределённый запрос
-        $this->lastMask = []; // последние использованные значения для замены масок
+        $this->lastBunch = []; // последний использованный массив соответствий маски и значения
         $this->currentCols = '*'; // default значение для результирующих столбцов (вернутся в ответе все)
     }
 
@@ -33,32 +33,36 @@ class DriverDB
         $sep = ','; // разделитель
         $maskOpts = [self::BEFORE => ':']; // опции форматирования для получения маски 
 
-        $keys = self::getStrKeys($data, $sep); // названия тбличных данных
-        $mask = self::getStrKeys($data, $sep, $maskOpts); // маска для значений
+        $keys = $this->getStrKeys($data, $sep); // названия тбличных данных
+        $mask = $this->getStrKeys($data, $sep, $maskOpts); // маска для значений
 
         $sql = sprintf('INSERT INTO `%s`(%s) VALUES (%s)', $table, $keys, $mask);
         $st = $this->db->prepare($sql);
 
-        return $st->execute(self::getArrClaim($data, $maskOpts));
+        return $st->execute($this->getArrBunch($data, $maskOpts));
     }
 
     /**
      * подготовка запроса с условием
      * определяет statement
-     * вернёт $this
+     * $cond должен быть в формате -> [ col => [ compare => val ] ]
+     *
+     *  вернёт $this
      *  */
     public function find(String $table, Array $cond = [])
     {
         $sql = sprintf('SELECT %s FROM `%s`', $this->currentCols, $table);
 
-        if (!empty($cond)) {
-            $maskOpts = [self::BEFORE => '=:', self::INSERT_CLONE_BEFORE => true]; // => key=:key
-            $mask = self::getStrKeys($cond, " AND ", $maskOpts); // => key=:key AND key=:key
-            
-            $sql .= sprintf(' WHERE %s', $mask);
+        if (empty($cond)) {
+            $this->lastBunch = $cond;
+            $this->statement = $this->db->prepare($sql);
+
+            return $this;
         }
 
-        $this->lastMask = array_merge($this->lastMask, self::getArrClaim($cond, [self::BEFORE => ':']));
+        $mask = $this->getMaskCompare($cond, $this->lastBunch);
+        $sql .= sprintf(' WHERE %s', $mask);
+
         $this->statement = $this->db->prepare($sql);
 
         return $this;
@@ -99,7 +103,7 @@ class DriverDB
             $this->st_setCols($strCols); // обновление столбцов в запросе
         }
 
-        $this->statement->execute($this->lastMask);
+        $this->statement->execute($this->lastBunch);
         
         return $this->statement->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -108,9 +112,18 @@ class DriverDB
     public function st_getSum(String $col)
     {
         $this->st_setCols("SUM($col)");
-        $this->statement->execute($this->lastMask);
+        $this->statement->execute($this->lastBunch);
         
-        return $this->statement->fetch(\PDO::FETCH_ASSOC);
+        return $this->statement->fetch(\PDO::FETCH_NUM)[0];
+    }
+
+    // вернёт сумму значений переданного столбца из соответстующей выборки
+    public function st_getCount()
+    {
+        $this->st_setCols("COUNT(*)");
+        $this->statement->execute($this->lastBunch);
+        
+        return $this->statement->fetch(\PDO::FETCH_NUM)[0];
     }
 
     // установит новое значение столбцов и обновит statement
@@ -126,8 +139,35 @@ class DriverDB
         $this->statement = $this->db->prepare($sql); // обновить statement
     }
 
+    // 
+    /**
+     * формат для обрабатываемого значения [key => [compare => val]]
+     * в $ArrBunchCompare запишет массив соответствий в виде -> [:key => val]
+     * вернёт строку для маски на условие WHERE -> 'key compare :key'
+     *  */ 
+    private function getMaskCompare(Array $arr, &$arrBunchCompare = [])
+    {
+        $res = '';
+        $separator = ' AND ';
+        $arrBunchCompare = []; // reset
+
+        foreach($arr as $col => $args) {
+            foreach($args as $compare => $val) {
+                $mask = ':' . $col;
+                $res .= $col . $compare . $mask . $separator;
+                
+                $arrBunchCompare[$mask] = $val;
+            }
+        }
+
+        $pattern = '/'. $separator . '$/';
+        $res = preg_replace($pattern, '', $res);
+
+        return $res;
+    }
+
     // форматирует строку в соответствии с опциями
-    private static function formatStr(String $str, Array $opts)
+    private function formatStr(String $str, Array $opts)
     {
         $res = $str;
 
@@ -144,32 +184,32 @@ class DriverDB
         return $res;
     }
 
-    // вернёт строку ключей, разделёны serarator, форматированный по opts
-    private static function getStrKeys(Array $data, String $serarator = ',', Array $opts = [])
+    // вернёт строку ключей, разделёны separator, форматированный по opts
+    private function getStrKeys(Array $data, String $separator = ',', Array $opts = [])
     {
         $res = '';
         $keys = array_keys($data);
 
         foreach($keys as $key) {
             // изменения выходного кдюча
-            $key = self::formatStr($key, $opts);
-            $res .= $key . $serarator;
+            $key = $this->formatStr($key, $opts);
+            $res .= $key . $separator;
         }
 
-        // для удаления serarator с конца
-        $pattern = '/'. $serarator . '$/';
+        // для удаления separator с конца
+        $pattern = '/'. $separator . '$/';
 
         return preg_replace($pattern, '', $res); 
     }
 
     // заменяет ключ на маску, вернёт изменённый масив
-    private static function getArrClaim(Array $data, Array $opts)
+    private function getArrBunch(Array $data, Array $opts)
     {
         $res = [];
 
         foreach($data as $key => $val) {
             // изменения выходного кдюча
-            $key = self::formatStr($key, $opts);
+            $key = $this->formatStr($key, $opts);
             $res[$key] = $val;
         }
 

@@ -40,13 +40,13 @@ class Convertor
             if  ($valute[self::API_CCY] === $from && $valute[self::API_BASE_CCY] === $to) {
                 $price = $valute[self::API_SALE];
                 
-                return $val * $price;
+                return (float) $val * (float) $price;
             }
             // взять курс покупки @to - значение разделить на @to
             elseif ($valute[self::API_CCY] === $to && $valute[self::API_BASE_CCY] === $from) {
                 $price = $valute[self::API_BUY];
                 
-                return $val / $price;
+                return (float) $val / (float) $price;
             }
         }
 

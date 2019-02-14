@@ -7,11 +7,20 @@ class Validator
     const TYPE_STRING = 'string';
     const TYPE_NUMBER = 'number';
 
-    function __construct(Array $rules, Array $filter = [])
+    function __construct(Array $rules = [], Array $filter = [])
     {
         $this->rules = $rules; // правила по которым проверять
         $this->filter = $filter; // хранит настройки для фильтрации полей
         $this->glossary = $this->getGlossary(); // [правило => проверка]
+    }
+
+    /**
+     * Установка правил и фильтра
+     */
+    public function init(Array $rules, Array $filter = [])
+    {
+        $this->rules = $rules;
+        $this->filter = $filter;
     }
 
     public function run(Array $data)

@@ -2,7 +2,9 @@
 
 namespace controller;
 
-class Order extends BaseOrder
+use externalAPI\Convertor;
+
+class Order extends BaseController
 {
     function __construct()
     {
@@ -37,25 +39,32 @@ class Order extends BaseOrder
     public function actionList()
     {
         $this->title = 'Отчёты о заказах';
-        $this->isList = true;
 
         if (!isset($_GET['filter'])) {
-            $this->content = $this->build('order/list', [
-                'orders' => $this->model->get()
-            ]);
-            return;
+            $orders = $this->model->find()->get();
+        }
+        else {
+            $filter = [
+                'id' => $_GET['id'] ?? '',
+                'client_name' => $_GET['client_name'] ?? '',
+                'amount' => $_GET['amount'] ?? '',
+            ];
+
+            $this->model->find($filter); // поиск
+            $isDesc = true; // как сортировать
+
+            $orders = $this->model->get([], ['date_created'], $isDesc);
         }
 
-        $filter = [
-            'id' => $_GET['id'] ?? '',
-            'city' => $_GET['city'] ?? '',
-            'amount' => $_GET['amount'] ?? '',
-        ];
-
-        $orders = $this->model->get([], $filter, ['date_created'], true);
+        $count = $this->model->getCount();
+        $sumInUAH = $this->model->getSum('amount');
+        $sumInUSD = $sumInUAH > 0 ? Convertor::exec($sumInUAH, 'UAH', 'USD') : 0;
 
         $this->content = $this->build('order/list', [
-            'orders' => $orders
+            'orders' => $orders,
+            'count' => $count,
+            'sumInUAH' => getAsPrice($sumInUAH),
+            'sumInUSD' => getAsPrice($sumInUSD)
         ]);
     }
 }

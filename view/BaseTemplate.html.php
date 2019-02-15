@@ -10,10 +10,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <link href="/public/css/jquery-ui-themes.css" type="text/css" rel="stylesheet"/>
     <link href="/public/css/styles.css" type="text/css" rel="stylesheet"/>
+    <script src="/public/js/jquery-1.7.1.min.js"></script>
+    <script src="/public/js/jquery-ui-1.8.10.custom.min.js"></script>
 </head>
   <body>
     <?= $content ?>
   </body>
-  <script src="/public/js/jquery-1.7.1.min.js"></script>
-  <script src="/public/js/jquery-ui-1.8.10.custom.min.js"></script>
 </html>

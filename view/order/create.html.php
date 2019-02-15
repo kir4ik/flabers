@@ -1,3 +1,5 @@
+<script src="/public/js/jquery.mask.min.js"></script>
+
 <?php if(!empty($errors)) foreach($errors as $field => $err): ?>
   <ul>Поле: <?= $field ?>
   <?php for($i = 0; $i < count($err); $i++): ?>
@@ -34,7 +36,7 @@
 
   <div class="form__group">
     <label for="phone" class="label form__label">Номер телефона</label>
-    <input type="text" name="phone" id="phone"
+    <input type="text" name="phone" id="phone" data-mask="+38(___) ___-__-__"
           value="<?= isset($_POST['phone']) ? $_POST['phone'] : '+38(___) ___-__-__' ?>"
           class="input form__input"/>
     <span class="hint form__hint">Обязательное поле, только цифры по маске</span>
@@ -71,3 +73,13 @@
   </div>
 
 </form>
+
+<script type="text/javascript">
+  $("#phone").mask("+38(999) 9999-99-99", {
+    translation: {
+      // '_': {pattern: /\d/, optional: false},
+    },
+    optional: false,
+    placeholder: "+38(___) ___-__-__"
+  });
+</script>

@@ -51,10 +51,10 @@ class Order extends BaseController
             ];
 
             $this->model->find($filter); // поиск
-            $isDesc = true; // как сортировать
-
-            $orders = $this->model->get([], ['date_created'], $isDesc);
         }
+        
+        $isDesc = true; // как сортировать
+        $orders = $this->model->get([], ['date_created'], $isDesc);
 
         $count = $this->model->getCount();
         $sumInUAH = $this->model->getSum('amount');

@@ -4,12 +4,17 @@
 use install\Installer;
 $installer = new Installer();
 $installer->run();
-
-private static $host = 'localhost';
+```
+>**Настройки БД:**
+```php
+	private static $host = 'localhost';
 	private static $dbname = 'flabers';
 	private static $user = 'root';
 	private static $pass = '';
 ```
+>**Страницы будут доступны по url:**
+>* _your-domain/_**order/create**
+>* _your-domain/_**order/list**
 
 путь | справка
 -|-

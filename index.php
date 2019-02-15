@@ -15,12 +15,17 @@ $uri = explode('/', $_GET['uri']);
 
 switch($uri[0]) {
 	case 'order':
-		$controller = new \controller\Order();
+		$controller = 'Order';
 		break;
 
 	default:
 		notFound();
 }
+if (isset($_REQUEST['r_type']) && $_REQUEST['r_type'] === 'json') {
+	$controller .= 'JSON';
+}
+$controller = sprintf('controller\%s', $controller);
+$controller = new $controller();
 
 switch($uri[1]) {
 	case 'create':

@@ -60,7 +60,7 @@ class Validator
     // true => пустое поле
     public static function isEmpty($val)
     {
-        return trim($val) == '';
+        return trim($val) === '';
     }
 
     // true => значение меньше

@@ -6,11 +6,11 @@ use model;
 
 class BaseController
 {
-    function __construct()
+    function __construct($model)
     {
         $this->title = 'BaseTemlate';
         $this->content = '';
-        $this->model = new model\Order();
+        $this->model = $model;
     }
 
     // отдаёт готовую страницу

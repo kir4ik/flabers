@@ -3,12 +3,13 @@
 namespace controller;
 
 use externalAPI\Convertor;
+use model;
 
 class Order extends BaseController
 {
     function __construct()
     {
-        parent::__construct();
+        parent::__construct(new model\Order());
     }
 
     public function actionCreate()

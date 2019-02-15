@@ -10,12 +10,12 @@ class Order extends BaseModel
         'client_name' => [
             'required' => true,
             'alphabet' => true,
-            'length' => ['min' => 2, 'type' => Validator::TYPE_STRING]
+            // 'length' => ['min' => 2, 'type' => Validator::TYPE_STRING]
         ],
         'client_last_name' => [
             'required' => true,
             'alphabet' => true,
-            'length' => ['min' => 2, 'type' => Validator::TYPE_STRING]
+            // 'length' => ['min' => 2, 'type' => Validator::TYPE_STRING]
         ],
         'phone' => [
             'required' => true,

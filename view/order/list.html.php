@@ -25,11 +25,12 @@
   <div class="form__group-filter">
   <label for="amount" class="label form__label">Сумма заказа</label>
     <select  id="amount" name="amount" class="input form__input--select">
-        <option value="{lt}100" <?= $_GET['amount'] === '{lt}100' ? selected : '' ?> >До 100 гривен</option>
-        <option value="{lt}500" <?= $_GET['amount'] === '{lt}500' ? selected : '' ?> >До 500 гривен</option>
-        <option value="{lt}1000" <?= $_GET['amount'] === '{lt}1000' ? selected : '' ?> >До 1000 гривен</option>
-        <option value="{lt}5000" <?= $_GET['amount'] === '{lt}5000' ? selected : '' ?> >До 5000 гривен</option>
-        <option value="{lt}10000" <?= $_GET['amount'] === '{lt}10000' ? selected : '' ?> >До 10000 гривен</option>
+        <option value="" <?= getIsExists($_GET['amount']) ? '' : 'selected' ?> >-- выбрать --</option>
+        <option value="{lt}100" <?= $_GET['amount'] === '{lt}100' ? 'selected' : '' ?> >До 100 гривен</option>
+        <option value="{lt}500" <?= $_GET['amount'] === '{lt}500' ? 'selected' : '' ?> >До 500 гривен</option>
+        <option value="{lt}1000" <?= $_GET['amount'] === '{lt}1000' ? 'selected' : '' ?> >До 1000 гривен</option>
+        <option value="{lt}5000" <?= $_GET['amount'] === '{lt}5000' ? 'selected' : '' ?> >До 5000 гривен</option>
+        <option value="{lt}10000" <?= $_GET['amount'] === '{lt}10000' ? 'selected' : '' ?> >До 10000 гривен</option>
       </select>
   </div>
 

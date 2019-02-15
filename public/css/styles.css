@@ -157,6 +157,23 @@ body {
     padding: 0 15px;
     white-space: nowrap;
 }
+.form__error {
+    display: block;
+    width: 100%;
+    text-align: left;
+    color: red;
+}
+.form__input--error {
+    border-color: red;
+    outline-color: transparent;
+}
+.form__input--error:focus {
+    border-color: orange;
+    outline-color: transparent;
+}
+.form__input--success {
+    border-color: greenyellow;
+}
 .form__submit {
     background-color: rgba(22, 155, 213, 1);
     border: none;

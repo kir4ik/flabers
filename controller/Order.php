@@ -18,7 +18,14 @@ class Order extends BaseController
             $this->content = $this->build('order/create');
         }
         else {
-            $isSuccess = $this->model->create($_POST);
+            $isSuccess = $this->model->create([
+                'client_name' => $_POST['client_name'],
+                'client_last_name' => $_POST['client_last_name'],
+                'phone' => $_POST['phone'],
+                'email' => $_POST['email'],
+                'city' => $_POST['city'],
+                'amount' => $_POST['amount'],
+            ]);
             // всё ок
             if ($isSuccess) {
                 $this->title = 'Заявка принята';

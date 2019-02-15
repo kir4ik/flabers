@@ -132,10 +132,10 @@ class Validator
         return '';
     }
 
-    // проверка пропустит только алфавитные символы
+    // проверка пропустит только алфавитные символы и пробелы
     private function checkAlphabet($val, $rule)
     {
-        $pattern = '/^[a-zA-ZА-Яа-я\\s]+$/iu';
+        $pattern = '/^([a-zA-ZА-Яа-я]+\s*)+$/iu';
         if (preg_match($pattern, $val) === 0) {
             return 'разрешены только буквы';
         }

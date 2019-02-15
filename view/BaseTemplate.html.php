@@ -12,6 +12,7 @@
     <link href="/public/css/styles.css" type="text/css" rel="stylesheet"/>
     <script src="/public/js/jquery-1.7.1.min.js"></script>
     <script src="/public/js/jquery-ui-1.8.10.custom.min.js"></script>
+    <script src="/public/js/jquery.validate.min.js"></script>
 </head>
   <body>
     <?= $content ?>

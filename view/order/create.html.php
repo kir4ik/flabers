@@ -1,12 +1,4 @@
-<script src="/public/js/jquery.mask.min.js"></script>
-
-<?php if(!empty($errors)) foreach($errors as $field => $err): ?>
-  <ul>Поле: <?= $field ?>
-  <?php for($i = 0; $i < count($err); $i++): ?>
-    <li>Ошибка: <?= $err[$i] ?></li>
-  <?php endfor; ?>
-  </ul>
-<?php endforeach; ?>
+<script src="/public/js/jquery.inputmask.bundle.js"></script>
 
 <nav class="nav">
     <a href="/order/create" class="nav__item nav__item--active">Создать заказ</a>
@@ -15,7 +7,18 @@
 </nav>
 <div class="line-x"></div>
 
-<form action="/order/create" method="POST" class="form">
+<?php if(!empty($_POST) && empty($errors)): ?>
+  <script>alert('Всё ок\nЗаявка принята');</script>
+<?php elseif(!empty($errors)): foreach($errors as $field => $err): ?>
+    <ul>Поле: <?= $field ?>
+    <?php for($i = 0; $i < count($err); $i++): ?>
+      <li>Ошибка: <?= $err[$i] ?></li>
+    <?php endfor; ?>
+    </ul>
+  <?php endforeach; ?>
+<?php endif; ?>
+
+<form action="/order/create" method="POST" class="form" id="form_create">
   <h3 class="title">Создать заказ</h3>
 
   <div class="form__group">
@@ -74,12 +77,111 @@
 
 </form>
 
+<!-- validation & mask -->
 <script type="text/javascript">
-  $("#phone").mask("+38(999) 9999-99-99", {
-    translation: {
-      // '_': {pattern: /\d/, optional: false},
+  var maskPhone = '+38(999) 999-99-99'; // mask
+
+  var phone = $("#phone").inputmask({"mask": maskPhone, showMaskOnFocus: true, showMaskOnHover: true, clearMaskOnLostFocus : false});
+
+  // validation for all field by default
+  var totalValid = {
+    required: true,
+    normalizer: function( value ) {
+          return $.trim( value );
+        }
+  };
+  var msg = { // messages for display error
+    required: 'обязательное поле',
+    alphabet: 'может содержать только буквы',
+    number: 'должно быть числом',
+    email: 'не корректный E-mail',
+    phone: 'не корректный номер',
+  };
+
+  // Custom nethod validation
+  $.validator.addMethod('customEmail', function(value, element) {
+    var pattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?){1}$/;
+
+    return pattern.test(value);
+  });
+
+  $.validator.addMethod('alphabet', function(value, element) {
+    var pattern = /^(?:[a-zа-я]+\s*)+$/i;
+
+    return pattern.test(value);
+  });
+ 
+  $.validator.addMethod('phone', function(value, element) {
+    return  Inputmask.isValid(value, maskPhone);
+  });
+
+  // set validator
+  $( "#form_create" ).validate({
+    wrapper: 'div class="form__label form__error"',
+    errorPlacement: function(error, element) {
+      error.insertBefore(element);
     },
-    optional: false,
-    placeholder: "+38(___) ___-__-__"
+    errorClass: 'form__input--error',
+    validClass: 'form__input--success',
+    highlight: function(element, errorClass, validClass) {
+      $(element).addClass(errorClass).removeClass(validClass);
+    },
+    unhighlight: function(element, errorClass, validClass) {
+      $(element).addClass(validClass).removeClass(errorClass);
+    },
+    rules: {
+      client_name: {
+        ...totalValid,
+        alphabet: true
+      },
+      client_last_name: {
+        ...totalValid,
+        alphabet: true
+      },
+      phone: {
+        ...totalValid,
+        phone: true
+      },
+      email: {
+        ...totalValid,
+        email: false,
+        customEmail: true
+      },
+      city: {
+        ...totalValid,
+        alphabet: true
+      },
+      amount: {
+        ...totalValid,
+        number: true
+      }
+    },
+    messages: {
+      client_name: {
+        required: msg.required,
+        alphabet: msg.alphabet,
+      },
+      client_last_name: {
+        required: msg.required,
+        alphabet: msg.alphabet,
+      },
+      phone: {
+        required: msg.required,
+        phone: msg.phone,
+      },
+      email: {
+          required: msg.required,
+          customEmail: msg.email,
+          email: msg.email,
+      },
+      city: {
+        required: msg.required,
+        alphabet: msg.alphabet,
+      },
+      amount: {
+          required: msg.required,
+          number: msg.number,
+      }
+    }
   });
 </script>
